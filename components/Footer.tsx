@@ -1,3 +1,4 @@
+
 import React from 'react';
 // FIX: Changed import to wildcard to resolve module export issue.
 import * as ReactRouterDOM from 'react-router-dom';
@@ -30,8 +31,8 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-2 text-gray-400">
-              <li>Email: support@e-fusion.com</li>
-              <li>Phone: (123) 456-7890</li>
+              <li>Email: srabee46@gmail.com</li>
+              <li>Phone: +20 122 780 8830</li>
               <li>Address: 123 Tech Avenue, Silicon Valley, CA</li>
             </ul>
           </div>

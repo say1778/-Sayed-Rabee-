@@ -1,10 +1,15 @@
-
 export interface Product {
   id: number;
   name: string;
   price: number;
   imageUrl: string;
   category: string;
+}
+
+export type NewProductData = Omit<Product, 'id'>;
+
+export interface CartItem extends Product {
+  quantity: number;
 }
 
 export interface BlogPost {
@@ -14,6 +19,7 @@ export interface BlogPost {
   author: string;
   date: string;
   imageUrl: string;
+  content: string;
 }
 
 export interface Service {

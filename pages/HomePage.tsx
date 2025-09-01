@@ -4,8 +4,13 @@ import * as ReactRouterDOM from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import BlogPostCard from '../components/BlogPostCard';
 import { FEATURED_PRODUCTS, BLOG_POSTS } from '../constants';
+import type { Product } from '../types';
 
-const HomePage: React.FC = () => {
+interface HomePageProps {
+  addToCart: (product: Product) => void;
+}
+
+const HomePage: React.FC<HomePageProps> = ({ addToCart }) => {
   return (
     <div className="space-y-16 md:space-y-24 pb-16">
       {/* Hero Section */}
@@ -28,7 +33,7 @@ const HomePage: React.FC = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Featured Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {FEATURED_PRODUCTS.map(product => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} addToCart={addToCart} />
           ))}
         </div>
       </section>

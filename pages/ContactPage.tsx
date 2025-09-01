@@ -68,10 +68,10 @@ const ContactPage: React.FC = () => {
                 <p className="ml-3">123 Tech Avenue<br/>Silicon Valley, CA 94000</p>
               </div>
               <div className="flex items-center">
-                <p className="ml-3">(123) 456-7890</p>
+                <p className="ml-3">+20 122 780 8830</p>
               </div>
               <div className="flex items-center">
-                <p className="ml-3">support@e-fusion.com</p>
+                <p className="ml-3">srabee46@gmail.com</p>
               </div>
             </div>
             <div className="mt-8 border-t border-accent pt-6">
