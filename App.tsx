@@ -17,9 +17,10 @@ import AddProductPage from './pages/AddProductPage';
 import EditProductPage from './pages/EditProductPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
+import AddBlogPostPage from './pages/AddBlogPostPage';
 
-import { ALL_PRODUCTS } from './constants';
-import type { Product, NewProductData, CartItem } from './types';
+import { ALL_PRODUCTS, BLOG_POSTS as INITIAL_BLOG_POSTS } from './constants';
+import type { Product, NewProductData, CartItem, BlogPost, NewBlogPostData } from './types';
 
 const ScrollToTop = () => {
   const { pathname } = ReactRouterDOM.useLocation();
@@ -34,6 +35,7 @@ const ScrollToTop = () => {
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>(ALL_PRODUCTS);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(INITIAL_BLOG_POSTS);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const addProduct = (newProductData: NewProductData) => {
@@ -56,6 +58,15 @@ const App: React.FC = () => {
     setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
   };
   
+  const addBlogPost = (newPostData: NewBlogPostData) => {
+    const newPost: BlogPost = {
+        ...newPostData,
+        id: blogPosts.length > 0 ? Math.max(...blogPosts.map(p => p.id)) + 1 : 1,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    };
+    setBlogPosts(prevPosts => [newPost, ...prevPosts]);
+  };
+
   const addToCart = (product: Product) => {
     setCartItems(prevItems => {
         const itemInCart = prevItems.find(item => item.id === product.id);
@@ -92,16 +103,17 @@ const App: React.FC = () => {
         <Header cartItems={cartItems} />
         <main className="flex-grow">
           <ReactRouterDOM.Routes>
-            <ReactRouterDOM.Route path="/" element={<HomePage addToCart={addToCart} />} />
+            <ReactRouterDOM.Route path="/" element={<HomePage addToCart={addToCart} blogPosts={blogPosts} />} />
             <ReactRouterDOM.Route path="/products" element={<ProductListingPage products={products} deleteProduct={deleteProduct} addToCart={addToCart} />} />
             <ReactRouterDOM.Route path="/about" element={<AboutPage />} />
             <ReactRouterDOM.Route path="/services" element={<ServicesPage />} />
-            <ReactRouterDOM.Route path="/blog" element={<BlogPage />} />
+            <ReactRouterDOM.Route path="/blog" element={<BlogPage blogPosts={blogPosts} />} />
             <ReactRouterDOM.Route path="/contact" element={<ContactPage />} />
             <ReactRouterDOM.Route path="/promotions" element={<PromotionsPage />} />
             <ReactRouterDOM.Route path="/affiliates" element={<AffiliatesPage />} />
-            <ReactRouterDOM.Route path="/blog/:postId" element={<BlogPostPage />} />
+            <ReactRouterDOM.Route path="/blog/:postId" element={<BlogPostPage blogPosts={blogPosts} />} />
             <ReactRouterDOM.Route path="/add-product" element={<AddProductPage addProduct={addProduct} />} />
+            <ReactRouterDOM.Route path="/add-blog-post" element={<AddBlogPostPage addBlogPost={addBlogPost} />} />
             <ReactRouterDOM.Route path="/edit-product/:productId" element={<EditProductPage products={products} editProduct={editProduct} deleteProduct={deleteProduct} />} />
             <ReactRouterDOM.Route path="/cart" element={<CartPage cartItems={cartItems} updateCartQuantity={updateCartQuantity} removeFromCart={removeFromCart} />} />
             <ReactRouterDOM.Route path="/checkout" element={<CheckoutPage cartItems={cartItems} clearCart={clearCart} />} />

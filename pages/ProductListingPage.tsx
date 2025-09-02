@@ -22,6 +22,9 @@ const SORT_OPTIONS = [
 
 const ProductListingPage: React.FC<ProductListingPageProps> = ({ products, deleteProduct, addToCart }) => {
     const [adminSearch, setAdminSearch] = useState('');
+    // State to hold the debounced search term for filtering
+    const [debouncedAdminSearch, setDebouncedAdminSearch] = useState(adminSearch);
+    
     const categories = useMemo(() => ['All', ...Array.from(new Set(products.map(p => p.category)))], [products]);
     const maxPossiblePrice = useMemo(() => products.length > 0 ? Math.ceil(Math.max(...products.map(p => p.price))) : 1000, [products]);
     
@@ -37,6 +40,20 @@ const ProductListingPage: React.FC<ProductListingPageProps> = ({ products, delet
         setPriceRange({ min: 0, max: maxPossiblePrice });
     }, [maxPossiblePrice]);
 
+    // Debouncing for the admin search input is implemented here.
+    // This effect waits for the user to stop typing for 300ms before updating the
+    // debounced search state, which triggers the filtering. This optimizes performance.
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedAdminSearch(adminSearch);
+        }, 300); // Wait 300ms after user stops typing
+
+        // Cleanup function to clear the timeout if the user types again
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [adminSearch]);
+
     const filteredProducts = useMemo(() => {
         return products.filter(product => {
             const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
@@ -45,15 +62,19 @@ const ProductListingPage: React.FC<ProductListingPageProps> = ({ products, delet
                 ? product.name.toLowerCase().includes(searchQuery.toLowerCase())
                 : true;
             
-            const matchesAdminSearch = adminSearch
-                ? product.name.toLowerCase().includes(adminSearch.toLowerCase()) ||
-                  product.category.toLowerCase().includes(adminSearch.toLowerCase()) ||
-                  product.id.toString().includes(adminSearch)
+            // Case-insensitive admin search logic.
+            // Both the search term and the product fields are converted to lowercase
+            // to ensure a case-insensitive match for name, category, and ID.
+            const searchTerm = debouncedAdminSearch.toLowerCase();
+            const matchesAdminSearch = debouncedAdminSearch
+                ? product.name.toLowerCase().includes(searchTerm) ||
+                  product.category.toLowerCase().includes(searchTerm) ||
+                  product.id.toString().toLowerCase().includes(searchTerm)
                 : true;
             
             return matchesCategory && matchesPrice && matchesSearch && matchesAdminSearch;
         });
-    }, [products, selectedCategory, priceRange, searchQuery, adminSearch]);
+    }, [products, selectedCategory, priceRange, searchQuery, debouncedAdminSearch]); // Depend on debounced search
 
     const sortedProducts = useMemo(() => {
         const productsToSort = [...filteredProducts];
@@ -62,7 +83,7 @@ const ProductListingPage: React.FC<ProductListingPageProps> = ({ products, delet
                 productsToSort.sort((a, b) => a.price - b.price);
                 break;
             case 'price-desc':
-                productsToSort.sort((a, b) => b.price - a.price);
+                productsToSort.sort((a, b) => b.price - b.price);
                 break;
             case 'name-asc':
                 productsToSort.sort((a, b) => a.name.localeCompare(b.name));
@@ -79,7 +100,7 @@ const ProductListingPage: React.FC<ProductListingPageProps> = ({ products, delet
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedCategory, priceRange, searchQuery, sortOption, adminSearch]);
+    }, [selectedCategory, priceRange, searchQuery, sortOption, debouncedAdminSearch]); // Depend on debounced search
 
     const totalPages = Math.ceil(sortedProducts.length / PRODUCTS_PER_PAGE);
 

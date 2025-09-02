@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
 import type { Product } from '../types';
 
-// FIX: Made the `deleteProduct` prop optional to allow the `ProductCard` component to be used in display-only contexts (like the homepage) where administrative actions are not available.
 interface ProductCardProps {
   product: Product;
+  // The deleteProduct prop is optional to allow this component to be used in views where admin actions are not available (e.g., homepage).
   deleteProduct?: (productId: number) => void;
   addToCart?: (product: Product) => void;
 }
@@ -14,6 +13,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, deleteProduct, addTo
   const [isAdded, setIsAdded] = useState(false);
 
   const handleDelete = () => {
+    // Display a confirmation dialog before proceeding with deletion.
     if (deleteProduct && window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
       deleteProduct(product.id);
     }
@@ -50,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, deleteProduct, addTo
                     {isAdded ? 'Added!' : 'Add to Cart'}
                 </button>
             )}
-            {/* FIX: Conditionally render the "Edit" and "Delete" buttons only when the `deleteProduct` prop is provided, hiding them in display-only views. */}
+            {/* Conditionally render admin buttons only when the deleteProduct function is provided. */}
             {deleteProduct && (
               <div className="flex space-x-2">
                   <ReactRouterDOM.Link 

@@ -22,6 +22,8 @@ export interface BlogPost {
   content: string;
 }
 
+export type NewBlogPostData = Omit<BlogPost, 'id' | 'date'>;
+
 export interface Service {
   id: number;
   title: string;

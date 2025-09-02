@@ -24,16 +24,20 @@ const AddProductPage: React.FC<AddProductPageProps> = ({ addProduct }) => {
     }));
   };
 
+  // This function handles the file upload.
+  // It uses FileReader to convert the selected image into a base64 data URL.
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
+      // The onloadend callback updates the component's state with the data URL.
       reader.onloadend = () => {
         setFormData(prev => ({
           ...prev,
           imageUrl: reader.result as string
         }));
       };
+      // This initiates the file reading process.
       reader.readAsDataURL(file);
     }
   };
@@ -84,9 +88,11 @@ const AddProductPage: React.FC<AddProductPageProps> = ({ addProduct }) => {
                  <div>
                     <label className="block text-sm font-medium text-gray-700">Product Image</label>
                     <div className="mt-1 flex items-center space-x-4">
+                      {/* The image preview is displayed here. It's only rendered when a file has been selected and processed. */}
                       {formData.imageUrl && (
                         <img src={formData.imageUrl} alt="Product Preview" className="h-24 w-24 object-cover rounded-md shadow-sm" />
                       )}
+                      {/* The file input is triggered by this styled label, replacing the old text input for a URL. */}
                       <label htmlFor="imageUpload" className="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-highlight">
                           <span>Upload Image</span>
                           <input id="imageUpload" name="imageUpload" type="file" accept="image/*" onChange={handleImageChange} className="sr-only" />

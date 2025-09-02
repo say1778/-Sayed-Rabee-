@@ -3,14 +3,15 @@ import React from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import BlogPostCard from '../components/BlogPostCard';
-import { FEATURED_PRODUCTS, BLOG_POSTS } from '../constants';
-import type { Product } from '../types';
+import { FEATURED_PRODUCTS } from '../constants';
+import type { Product, BlogPost } from '../types';
 
 interface HomePageProps {
   addToCart: (product: Product) => void;
+  blogPosts: BlogPost[];
 }
 
-const HomePage: React.FC<HomePageProps> = ({ addToCart }) => {
+const HomePage: React.FC<HomePageProps> = ({ addToCart, blogPosts }) => {
   return (
     <div className="space-y-16 md:space-y-24 pb-16">
       {/* Hero Section */}
@@ -53,7 +54,7 @@ const HomePage: React.FC<HomePageProps> = ({ addToCart }) => {
       <section className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">From Our Blog</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {BLOG_POSTS.slice(0, 3).map(post => (
+          {blogPosts.slice(0, 3).map(post => (
             <BlogPostCard key={post.id} post={post} />
           ))}
         </div>

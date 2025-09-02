@@ -1,11 +1,15 @@
 
 import React from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
-import { BLOG_POSTS } from '../constants';
+import type { BlogPost } from '../types';
 
-const BlogPostPage: React.FC = () => {
+interface BlogPostPageProps {
+  blogPosts: BlogPost[];
+}
+
+const BlogPostPage: React.FC<BlogPostPageProps> = ({ blogPosts }) => {
   const { postId } = ReactRouterDOM.useParams();
-  const post = BLOG_POSTS.find(p => p.id === Number(postId));
+  const post = blogPosts.find(p => p.id === Number(postId));
 
   if (!post) {
     return (

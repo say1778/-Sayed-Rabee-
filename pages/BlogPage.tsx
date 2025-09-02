@@ -1,9 +1,13 @@
 
 import React from 'react';
 import BlogPostCard from '../components/BlogPostCard';
-import { BLOG_POSTS } from '../constants';
+import type { BlogPost } from '../types';
 
-const BlogPage: React.FC = () => {
+interface BlogPageProps {
+  blogPosts: BlogPost[];
+}
+
+const BlogPage: React.FC<BlogPageProps> = ({ blogPosts }) => {
   return (
     <div className="bg-gray-100 py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,12 +19,8 @@ const BlogPage: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {BLOG_POSTS.map(post => (
+          {blogPosts.map(post => (
             <BlogPostCard key={post.id} post={post} />
-          ))}
-           {/* You can duplicate posts to show a fuller page */}
-           {BLOG_POSTS.map(post => (
-            <BlogPostCard key={post.id + 10} post={{...post, id: post.id + 10}} />
           ))}
         </div>
       </div>
